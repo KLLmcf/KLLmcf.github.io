@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISTEMA_CORROMPIDO</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --horror-red: #450000;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'VT323', monospace;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        .bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 115%; 
+            object-fit: cover;
+            z-index: -2;
+            filter: grayscale(100%) brightness(0.15) contrast(1.2);
+            pointer-events: none;
+            transform: translateY(-5%); 
+        }
+
+        .scanline-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 10; pointer-events: none;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.5) 50%),
+                        radial-gradient(circle, transparent 20%, #000 150%);
+            background-size: 100% 4px, 100% 100%;
+            animation: flicker 0.1s infinite;
+        }
+
+        #timer {
+            position: fixed;
+            top: 20px;
+            font-size: 2.5rem;
+            color: #ff0000;
+            text-shadow: 0 0 15px #f00;
+            z-index: 20;
+            letter-spacing: 10px;
+            font-weight: bold;
+        }
+
+        .container {
+            text-align: center;
+            z-index: 15;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border: 1px solid #222;
+            box-shadow: 0 0 50px #000;
+        }
+
+        h1 {
+            font-size: 4rem;
+            letter-spacing: 12px;
+            margin-bottom: 5px;
+            text-shadow: 4px 0px #f00, -4px 0px #0ff;
+            animation: glitch 0.2s infinite ease-in-out alternate;
+        }
+
+        p {
+            font-size: 1.8rem;
+            color: #777;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .blood-text {
+            color: #500;
+            font-size: 1.1rem;
+            margin-top: 60px;
+            opacity: 0.6;
+            font-style: italic;
+            letter-spacing: 1px;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.85; }
+            50% { opacity: 0.70; }
+            100% { opacity: 0.90; }
+        }
+
+        @keyframes glitch {
+            0% { transform: skew(2deg); opacity: 0.8; }
+            50% { transform: skew(-2deg); opacity: 1; }
+            100% { transform: skew(3deg); color: #ff0000; }
+        }
+    </style>
+</head>
+<body>
+    <video id="bg-media" class="bg-video" autoplay loop muted playsinline></video>
+    <div class="scanline-overlay"></div>
+    <div id="timer">--:--:--</div>
+    
+    <div class="container">
+        <h1>RESPOSTAS ENVIADAS</h1>
+        <p>OBRIGADO POR SE EXPOR</p>
+        <div class="blood-text">agora não tem mais volta.</div>
+    </div>
+
+    <audio id="horror-audio" loop>
+        <source src="A praga.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const videos = ["01.mp4", "02.mp4", "03.mp4", "04.mp4", "05.mp4", "06.mp4", "07.mp4", "08.mp4", "09.mp4"];
+        const randomVideo = videos[Math.floor(Math.random() * videos.length)];
+        document.getElementById('bg-media').src = randomVideo;
+
+        function updateTimer() {
+            const agora = new Date();
+            const amanha = new Date();
+            amanha.setDate(agora.getDate() + 0);
+            amanha.setHours(16, 0, 0, 0);
+
+            const diff = amanha - agora;
+
+            if (diff <= 0) {
+                document.getElementById('timer').innerHTML = "CONSUMADO";
+                return;
+            }
+
+            const h = Math.floor(diff / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('timer').innerHTML = 
+                (h < 10 ? "0" + h : h) + ":" + 
+                (m < 10 ? "0" + m : m) + ":" + 
+                (s < 10 ? "0" + s : s);
+        }
+
+        setInterval(updateTimer, 1000);
+        updateTimer();
+
+        document.body.addEventListener('click', function() {
+            const audio = document.getElementById("horror-audio");
+            audio.play();
+            audio.volume = 0.6;
+        }, { once: true });
+    </script>
+</body>
+</html>
