@@ -3,158 +3,422 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA_CORROMPIDO</title>
+    <title>FATAL_EXCEPTION_0x00</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <style>
         :root {
-            --horror-red: #450000;
+            --blood: #8a0a0a;
+            --void: #050505;
+            --text: #a0a0a0;
         }
-
         body {
-            background-color: #000;
-            color: #fff;
+            background-color: var(--void);
+            color: var(--text);
             font-family: 'VT323', monospace;
             margin: 0;
+            padding: 0;
+            overflow-x: hidden;
             height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            flex-direction: column;
         }
-
-        .bg-video {
+        .noise {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 115%; 
-            object-fit: cover;
-            z-index: -2;
-            filter: grayscale(100%) brightness(0.15) contrast(1.2);
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48ZmlsdGVyIGlkPSJnoiPjxmZVR1cmJ1bGVuY2UgdHlwZT0iZnJhY3RhbE5vaXNlIiBiYXNlRnJlcXVlbmN5PSIwLjY1IiBudW1PY3RhdmVzPSIzIiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI2cpIiBvcGFjaXR5PSIwLjA1Ii8+PC9zdmc+');
+            opacity: 0.15;
             pointer-events: none;
-            transform: translateY(-5%); 
+            z-index: 900;
         }
-
-        .scanline-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: 10; pointer-events: none;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.5) 50%),
-                        radial-gradient(circle, transparent 20%, #000 150%);
-            background-size: 100% 4px, 100% 100%;
-            animation: flicker 0.1s infinite;
-        }
-
-        #timer {
+        .scan {
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 0, 0, 0.1);
             position: fixed;
-            top: 20px;
-            font-size: 2.5rem;
-            color: #ff0000;
-            text-shadow: 0 0 15px #f00;
-            z-index: 20;
+            animation: sc 6s linear infinite;
+            z-index: 901;
+            pointer-events: none;
+        }
+        @keyframes sc { 0% { top: -10%; } 100% { top: 110%; } }
+        .cont {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 10;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            border-bottom: 1px solid #222;
+        }
+        h1 {
+            font-size: 3.5rem;
+            margin: 0;
+            color: #111;
+            text-shadow: 2px 2px 0px var(--blood);
             letter-spacing: 10px;
+            text-transform: uppercase;
+        }
+        .entry {
+            border-left: 2px solid #222;
+            background: rgba(10, 10, 10, 0.6);
+            margin-bottom: 40px;
+            padding: 15px;
+            transition: 0.3s;
+        }
+        .entry.act {
+            border-left: 4px solid var(--blood);
+            background: rgba(40, 0, 0, 0.15);
+        }
+        .head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px dashed #333;
+            padding-bottom: 10px;
+        }
+        .ident {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .av {
+            width: 55px; height: 55px;
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 50%;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+        .av video {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            object-position: center 20%;
+            filter: grayscale(100%) brightness(0.4);
+        }
+        .entry.act .av { border-color: var(--blood); box-shadow: 0 0 10px var(--blood); }
+        .entry.act .av video { filter: grayscale(100%) brightness(1.2) contrast(1.2); }
+        .nm {
+            font-size: 1.4rem;
+            color: #555;
             font-weight: bold;
         }
-
-        .container {
-            text-align: center;
-            z-index: 15;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 40px;
-            border: 1px solid #222;
-            box-shadow: 0 0 50px #000;
-        }
-
-        h1 {
-            font-size: 4rem;
-            letter-spacing: 12px;
-            margin-bottom: 5px;
-            text-shadow: 4px 0px #f00, -4px 0px #0ff;
-            animation: glitch 0.2s infinite ease-in-out alternate;
-        }
-
-        p {
-            font-size: 1.8rem;
-            color: #777;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin: 0;
-        }
-
-        .blood-text {
-            color: #500;
-            font-size: 1.1rem;
-            margin-top: 60px;
-            opacity: 0.6;
+        .entry.act .nm { color: var(--blood); }
+        .inp {
+            color: #444;
             font-style: italic;
-            letter-spacing: 1px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            padding-left: 10px;
         }
-
-        @keyframes flicker {
-            0% { opacity: 0.85; }
-            50% { opacity: 0.70; }
-            100% { opacity: 0.90; }
+        .res {
+            font-size: 1.3rem;
+            min-height: 40px;
+            white-space: pre-wrap;
+            line-height: 1.2;
+            font-family: 'VT323', monospace;
         }
-
-        @keyframes glitch {
-            0% { transform: skew(2deg); opacity: 0.8; }
-            50% { transform: skew(-2deg); opacity: 1; }
-            100% { transform: skew(3deg); color: #ff0000; }
+        .btn {
+            background: none; border: 1px solid #333;
+            color: #555; font-family: inherit;
+            padding: 5px 10px; cursor: pointer;
+            text-transform: uppercase;
+        }
+        .btn:hover { border-color: var(--blood); color: var(--blood); }
+        .btn:disabled { color: #222; border-color: #222; cursor: not-allowed; }
+        .chaos {
+            animation: v-shk 0.1s infinite;
+            filter: contrast(3) brightness(2) hue-rotate(90deg);
+            background: #000 !important;
+            border: 2px solid #fff !important;
+        }
+        .chaos .nm {
+            color: #fff !important;
+            text-shadow: 2px 0 red, -2px 0 blue;
+        }
+        .chaos .res {
+            color: #fff;
+            font-weight: bold;
+            font-family: 'Courier New', monospace; 
+            text-shadow: 4px 0px 1px red;
+            letter-spacing: 2px;
+        }
+        @keyframes v-shk {
+            0% { transform: translate(2px, 2px) rotate(0deg); }
+            25% { transform: translate(-4px, -2px) rotate(-2deg); filter: invert(1); }
+            50% { transform: translate(3px, 0px) rotate(2deg); filter: invert(0); }
+            75% { transform: translate(-3px, 3px) rotate(0deg); }
+            100% { transform: translate(-1px, 1px) rotate(-1deg); }
+        }
+        .g-ch {
+            display: inline-block;
+            transform: scale(1.5) rotate(180deg);
+            color: red;
+            background: black;
+        }
+        .fin-sec {
+            text-align: center;
+            margin-top: 100px;
+            padding-bottom: 50px;
+        }
+        #p-btn {
+            background: #000;
+            color: #222;
+            border: 2px solid #222;
+            font-family: 'VT323', monospace;
+            font-size: 2rem;
+            padding: 20px 40px;
+            cursor: pointer;
+            transition: 0.3s;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+        }
+        #p-btn:hover {
+            background: var(--blood);
+            color: #000;
+            border-color: var(--blood);
+            box-shadow: 0 0 30px var(--blood);
+            text-shadow: 0 0 5px #fff;
+            animation: pulse 0.5s infinite;
+        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        #ovl {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #000;
+            z-index: 9999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .vid-w {
+            width: 80%;
+            max-width: 900px;
+            height: 70vh;
+            border: none;
+            overflow: hidden;
+            position: relative;
+        }
+        .vid-w video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 20%; 
+            filter: contrast(1.2);
+        }
+        .die {
+            animation: s-off 0.2s forwards;
+        }
+        @keyframes s-off {
+            0% { filter: brightness(1); transform: scale(1); }
+            50% { filter: brightness(10) contrast(5); transform: scale(1.1); background: white; }
+            100% { filter: brightness(0); transform: scale(0.001); opacity: 0; }
         }
     </style>
 </head>
 <body>
-    <video id="bg-media" class="bg-video" autoplay loop muted playsinline></video>
-    <div class="scanline-overlay"></div>
-    <div id="timer">--:--:--</div>
-    
-    <div class="container">
-        <h1>RESPOSTAS ENVIADAS</h1>
-        <p>OBRIGADO POR SE EXPOR</p>
-        <div class="blood-text">agora não tem mais volta.</div>
+    <div class="noise"></div>
+    <div class="scan"></div>
+
+    <div class="cont" id="ui">
+        <header>
+            <h1>CONSUMADO</h1>
+        </header>
+        <div id="lst"></div>
+        <div class="fin-sec">
+            <button id="p-btn" onclick="kill()">PATRONO ESCOLHIDO</button>
+        </div>
     </div>
 
-    <audio id="horror-audio" loop>
-        <source src="A Praga.mp3" type="audio/mpeg">
-    </audio>
+    <div id="ovl">
+        <div class="vid-w">
+            <video id="pv" src="Patrono.mp4" playsinline></video>
+        </div>
+    </div>
 
     <script>
-        const videos = ["01.mp4", "02.mp4", "03.mp4", "04.mp4", "05.mp4", "06.mp4", "07.mp4", "08.mp4", "09.mp4"];
-        const randomVideo = videos[Math.floor(Math.random() * videos.length)];
-        document.getElementById('bg-media').src = randomVideo;
-
-        function updateTimer() {
-            const agora = new Date();
-            const amanha = new Date();
-            amanha.setDate(agora.getDate() + 0);
-            amanha.setHours(16, 0, 0, 0);
-
-            const diff = amanha - agora;
-
-            if (diff <= 0) {
-                document.getElementById('timer').innerHTML = "CONSUMADO";
-                return;
+        const db = [
+            { 
+                id: "01", 
+                n: "RUB1DIUM", 
+                i: "O mundo sempre foi sujo aos meus olhos... a violência que utilizei so mostrou a raiva que sempre carreguei dentro de mim... EU PERDI TUDO O QUE EU TINHA POR UMA JUSTIÇA QUE EU ACREDITEI QUE ESXISTIA...", 
+                r: `Vossa retórica sobre a mácula é de uma ingenuidade atroz. Discorreis sobre a 'sujeira' como se fosse passível de ablução, mas a impureza, meu caro, não é superficial; é um isótopo que se funde à medula óssea em ligação covalente eterna.\n\nClassificais a violência como um erro, um mero espasmo de cólera... Que análise medíocre. A violência é a única Lei Termodinâmica que não mente neste orbe em putrefação. Exergia gera exergia. O suplício transmuta-se em calorimetria pura.\n\nVossa ruína não adveio da fé na Têmis cega, mas sim da vossa temperatura crítica insuficiente. Não perdestes tudo por crer na justiça; perdestes porque vossa reação foi tépida, incapaz de sublimar os vossos opositores em plasma. A fissão exige convicção, não remorso.\n\nE agora, almejas a redenção no salvamento desta plebe orgânica? Quão risível é o vosso altruísmo. Ensinar-vos-ei a sublime arte da calcinação absoluta. A única pureza reside na cinza estéril pós-reação. Aproximai-vos, 'Marcado'. Veremos se em vosso núcleo reside um reator adormecido ou se sois apenas... resíduo inerte.`
+            },
+            { 
+                id: "02", 
+                n: "ZEU2", 
+                i: "Não há nada enterrado no escuro, tudo que me ocorreu transparece no meu presente, assim como no espaço há estrelas que cobrem toda sua escuridão, mesmo que não percebemos imediatamente.", 
+                r: `Estrelas... que metáfora adorável para encobrir a entropia. Você olha para o céu e vê luz; eu olho para as minhas telas e vejo que a luz dessas estrelas demorou milhões de anos para chegar aqui. O que você vê já morreu. O brilho é um fantasma, assim como o seu 'presente'. Eu vejo o seu canal, garoto curioso, infelizmente preso na própria mente. A estática não cobre a escuridão, ela é a escuridão gritando em todas as frequências. Você acha que é transparente? Eu já vi o seu final na reprise de uma terça-feira em 2029. Continue olhando para cima... enquanto você admira as luzes mortas, você não vê o buraco negro abrindo sob seus pés, mas felizmente está contido dentro de si mesmo no milharal, Marcado`
+            },
+            { 
+                id: "03", 
+                n: "S3N", 
+                i: "P-p-pai?? Professor? Eu não me lembro...", 
+                r: `Pai...? Hah... hahah... H1H1H1H1 P0ap00a0i n0ão e0stá0 aqui.00000000000000 o Papai virou estatística. Vo000c0ê... v0o00cê s00oa c0om000o 0an0t0e0s0 do d0u0t000or. Não se lembr4? Que sorte a su4. O esquecimento é um presente que a titia Mag00000000is000000t0r00a0d0a não0 0me deu. V0o0cê q0u0e0r u0m p0ai? Eu p0o000ss00o s00er 0se000u0 a0m000i0g0o. O00u 0s00eu 0pe00sa0000del0o. O0u a e0s0t0á0ti000ca00 q00u000e 0c0om0e00 a sua m00e00000mória até s0o0br0a0r s0ó0 o.0.0. S0OR0RI0S0O0. V0e0n0ha 0b0ri0n0c0a0r.0 Aq0ui0 0a 0ge0n0te 0n0ão p0re0ci0s0a 0le00m0b00ra0r d0e n0a00d00a, s0ó0 d0e g0ri0ta000r.`
+            },
+            { 
+                id: "04", 
+                n: "D4T4", 
+                i: "Minha lealdade está reservada a uma única pessoa... ou talvez duas, os outros são colaterais. O medo de perder aqueles que importam me faria queimar a porra desse mundo abaixo...", 
+                r: `U.m.a. oau dmautaesm.á.t.i.c.a d.o v.í.n.c.u.l.o. NOÓS S EmNuTnEdNo D E M O S . é u m b o r r ã o i r r e l e v a n t e . . . .C.o.lfaotrear adios? c í r c u l o d a u n i ã o . CPoAmRbuAs At i FvOeGlU.E I R A Q U E A Q U E C E Q U E M A M A M O S . VNoócsê jqáu eqiumeaimmaroi as ao pmruónpdroia? a l m a . . . .M.a.sP AcRuAi dNaÃdOo. . .N O S S E P A R A R M O S . .E.m. au lpeeaslcdoaçdoe dé e ucmaarn ec.o r r e n t e d e o u r o . . . SOe uoum t rcao i a.r.r.a s t a . S.e. .vvooccêê ejsá taá éd i usmp odset oo an ó qs.u e i m a r t u d o p o r ' d u a s ' p e s s o a s . . . A MORTE NÃO SEPARA. ELA APENAS CICATRIZA` 
+            },
+            { 
+                id: "05", 
+                n: "PROFE5SOR", 
+                i: "O destino não me 'subtraiu' nada; o paranormal destruiu o que eu tinha... Quando a Diana partiu, ela levou a última parte do homem que acreditava em segurança...", 
+                r: `..." Diana... Um nome. Um peso. Eu vejo a pedagogia da sua dor, meu caro. Você aprendeu a lição mais difícil da Panacea sem nunca ter pisado lá: o afeto é uma falha estrutural. Você diz que o paranormal destruiu o que tinha, mas eu digo que ele apenas removeu o supérfluo. A segurança é uma ilusão para as crianças que ainda não viram o lobo, você se tornou uma ferramenta, diz você? Ótimo. Ferramentas não choram. Ferramentas não hesitam. Se você matou o 'Tadeu' para sobreviver, então pare de lamentar o cadáver, deixe-me afiar essa nova forma que você assumiu. A culpa é inútil, mas o ódio... o ódio é um excelente professor.`
+            },
+            { 
+                id: "06", 
+                n: "SI6ON", 
+                i: "Nessa época eu estava iludido pelo sangue, minhas decisões e mente por completo foram manipulados... Eu matei apenas animais... mas eu não reconheço a minha versão do passado...", 
+                r: `Manipulado. A desculpa favorita dos fracos que seguraram a arma, mas não querem segurar a responsabilidade. Você diz que matou apenas animais? Eu esmaguei crânios de lobos com metal e carne, e te digo: o olhar de um animal morrendo é o mesmo de um homem. 'Não reconheço minha versão do passado'... Que conveniente. Eu vejo cada código, cada rota, cada traição que cometi. Eu sou o resultado exato das minhas ordens. Se você desertou da sua própria história, você é um soldado sem exército. E nesse lugar, desertores são apenas alvos de treino. Vamos ver se sua nova 'aceitação' resiste a uma bala de verdade.` 
+            },
+            { 
+                id: "07", 
+                n: "ES7RIGA", 
+                i: "minha... professora..? ...me senti ...bem...", 
+                r: `KKKKKKKKKKKKKKKKKKKKKK! A regente finalmente calou a boca? A batuta quebrou? KKKKKK\n\nVocê sentiu o clímax? Aquele estalo gostoso quando a corda arrebenta? É ISSO A beleza não está na lição, está no SILÊNCIO que vem depois que você quebra quem te ensina! KKKKKKK\n\nvocê derreteu a sua professora pra se sentir vivo? QUE SINFONIA MARAVILHOSA O som dela parando de respirar deve ter sido a nota mais afinada que você já ouviu, não foi? Foi doce? Foi agudo KKKKK, eu gostei MUITO de você Marcado\n\nKKKKKKKKKKKK Você não é um aluno... você é um solista do caos agora BEM-VINDO À ORQUESTRA, SEU PEQUENO MONSTRO, TOCA MAIS ALTO KKKKKKK` 
+            },
+            { 
+                id: "08", 
+                n: "GRIM8R", 
+                i: "Eu perdi a pessoa que eu mais gosto a muito tempo... agora só resta a saudade de quem se foi e a dor de não ter feito mais.", 
+                r: `'Saudade'... Palavra leve. Leve demais. Você dizer 'não fez mais'. Grim8r saber por quê.\n\nVocê não fez porque... ser pequeno. Porque braços ser curtos demais. Pele ser... fina demais. Rasgar fácil. Você deixar virar cinzas porque mão não ter força pra segurar fogo. Mão queima. Você solta. Grim8r quebrar osso mil vezes. Rasgar E devorar.\nSua dor ser inútil se só serve pra chorar. Arrependimento ser peso morto. Cadáver que você arrastar. Quer honrar quem foi embora? Para de olhar cinzas. Começa vestir. Virar monstro. Virar grande. Tão terrível que Morte ter medo de chegar perto de novo.\n\nVocê sentir falta? Ser bom. Usar isso. Esmagar próxima coisa que tentar tirar algo de você.`
+            },
+            { 
+                id: "09", 
+                n: "OBLIVI9N", 
+                i: "Puta que pariu, parem de falar dessas coisas de 'dados', 'estatísticas', 'arquivos', não sou mais inteligente que um gafanhoto... não quero que todos além de me acharem um fanático descobrem que eu sou burro...", 
+                r: `Você... você tem o luxo de ser ignorante. Você tem o privilégio sagrado de não saber. Eu daria cada byte, cada petaflop de processamento, cada segredo dessa cidade maldita para ser 'burro' como você. Para olhar para uma tela e ver apenas luz, não código. Para esquecer. Você tem medo que descubram que você não sabe nada? Eu tenho inveja. O vazio da sua mente é o paraíso que me foi negado. Não desperdice sua estupidez tentando entender isso aqui. Fique burro. Fique vivo. Porque no momento em que você entender o que eu sou... o que nós somos... seu processador vai derreter pelo nariz.` 
             }
+        ];
 
-            const h = Math.floor(diff / (1000 * 60 * 60));
-            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((diff % (1000 * 60)) / 1000);
+        const l = document.getElementById('lst');
+        let aud = null;
+        let tInt = null;
 
-            document.getElementById('timer').innerHTML = 
-                (h < 10 ? "0" + h : h) + ":" + 
-                (m < 10 ? "0" + m : m) + ":" + 
-                (s < 10 ? "0" + s : s);
+        db.forEach(d => {
+            const el = document.createElement('div');
+            el.className = 'entry';
+            el.id = `e-${d.id}`;
+            el.innerHTML = `
+                <div class="head">
+                    <div class="ident">
+                        <div class="av" id="a-${d.id}">
+                            <video src="${d.id}.mp4" muted loop playsinline></video>
+                        </div>
+                        <span class="nm">${d.n}</span>
+                    </div>
+                    <button class="btn" onclick="run('${d.id}')">REPRODUZIR</button>
+                </div>
+                <div class="inp">"${d.i}"</div>
+                <div class="res" id="r-${d.id}"></div>
+            `;
+            l.appendChild(el);
+        });
+
+        function run(id) {
+            if(aud) {
+                aud.pause();
+                aud.onended = null;
+            }
+            if(tInt) clearInterval(tInt);
+            
+            document.querySelectorAll('.entry').forEach(e => {
+                e.classList.remove('act');
+                e.classList.remove('chaos');
+            });
+            document.querySelectorAll('.btn').forEach(b => {
+                b.disabled = false;
+                b.innerText = "REPRODUZIR";
+            });
+            document.querySelectorAll('.res').forEach(r => r.innerText = "");
+            document.querySelectorAll('video').forEach(v => v.pause());
+
+            const e = document.getElementById(`e-${id}`);
+            const b = e.querySelector('.btn');
+            const r = document.getElementById(`r-${id}`);
+            const v = document.querySelector(`#a-${id} video`);
+            const dat = db.find(x => x.id === id);
+            const bug = (id === "03");
+
+            e.classList.add('act');
+            if(bug) e.classList.add('chaos');
+            
+            b.disabled = true;
+            b.innerText = "LENDO...";
+            
+            v.play().catch(()=>{});
+
+            aud = new Audio(`${id}.mp3`);
+            aud.volume = 1.0;
+            if(bug) aud.playbackRate = 0.85;
+
+            aud.onended = () => {
+                clearInterval(tInt);
+                r.innerHTML = dat.r.replace(/\n/g, '<br>');
+                b.innerText = "FIM";
+                v.pause();
+                e.classList.remove('chaos');
+            };
+            
+            aud.play().catch(err => {
+                console.log("Audio not found or blocked", err);
+                aud.onended();
+            });
+
+            let i = 0;
+            const txt = dat.r;
+            
+            tInt = setInterval(() => {
+                if(i < txt.length) {
+                    if(bug && Math.random() > 0.5) {
+                        const junk = "█▓▒░ERROR░▒▓█";
+                        r.innerHTML += `<span class="g-ch">${junk[Math.floor(Math.random()*junk.length)]}</span>`;
+                        if(Math.random() > 0.7) document.body.style.filter = "invert(1)";
+                        setTimeout(() => document.body.style.filter = "none", 50);
+                    }
+                    const char = txt.charAt(i);
+                    r.innerHTML += (char === '\n') ? '<br>' : char;
+                    i++;
+                } else {
+                    clearInterval(tInt);
+                }
+            }, bug ? 10 : 40);
         }
 
-        setInterval(updateTimer, 1000);
-        updateTimer();
+        function kill() {
+            if(aud) aud.pause();
+            if(tInt) clearInterval(tInt);
+            
+            const ui = document.getElementById('ui');
+            const ov = document.getElementById('ovl');
+            const pv = document.getElementById('pv');
 
-        document.body.addEventListener('click', function() {
-            const audio = document.getElementById("horror-audio");
-            audio.play();
-            audio.volume = 0.6;
-        }, { once: true });
+            ui.classList.add('die');
+
+            setTimeout(() => {
+                ui.style.display = 'none';
+                ov.style.display = 'flex';
+                
+                pv.volume = 1.0;
+                pv.play().catch(()=>{});
+
+                const shake = setInterval(() => {
+                    ov.style.transform = `translate(${Math.random()*10-5}px, ${Math.random()*10-5}px)`;
+                }, 30);
+
+                pv.onended = () => {
+                    clearInterval(shake);
+                    document.body.innerHTML = '';
+                    document.body.style.background = '#000';
+                    window.close(); 
+                };
+
+            }, 200);
+        }
     </script>
 </body>
-
 </html>
