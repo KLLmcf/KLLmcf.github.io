@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FATAL_EXCEPTION_0x00</title>
-    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
             --blood: #8a0a0a;
@@ -20,24 +20,140 @@
             overflow-x: hidden;
             height: 100vh;
         }
+
+        #hate-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            font-size: 6rem;
+            color: #6a00aa;
+            line-height: 0.75;
+            word-wrap: break-word;
+            overflow: hidden;
+            z-index: 1;
+            opacity: 0;
+            pointer-events: none;
+            text-transform: uppercase;
+            font-weight: bold;
+            text-shadow: 0 5px 0 #1a0033, 0 -5px 0 #000;
+            mix-blend-mode: screen;
+        }
+
         .noise {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48ZmlsdGVyIGlkPSJnoiPjxmZVR1cmJ1bGVuY2UgdHlwZT0iZnJhY3RhbE5vaXNlIiBiYXNlRnJlcXVlbmN5PSIwLjY1IiBudW1PY3RhdmVzPSIzIiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI2cpIiBvcGFjaXR5PSIwLjA1Ii8+PC9zdmc+');
-            opacity: 0.15;
+            opacity: 0.4;
             pointer-events: none;
             z-index: 900;
+            mix-blend-mode: overlay;
         }
         .scan {
             width: 100%;
-            height: 2px;
-            background: rgba(255, 0, 0, 0.1);
+            height: 4px;
+            background: rgba(255, 0, 0, 0.5);
             position: fixed;
-            animation: sc 6s linear infinite;
+            animation: sc 2s linear infinite;
             z-index: 901;
             pointer-events: none;
         }
         @keyframes sc { 0% { top: -10%; } 100% { top: 110%; } }
+
+        #terminal-layer {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #000;
+            z-index: 9998;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.88rem;
+            overflow: hidden;
+            flex-direction: column;
+        }
+        #term-header {
+            background: #050e05;
+            border-bottom: 1px solid #0a2a0a;
+            padding: 6px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #1a6b1a;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+        #term-header .th-dots span {
+            display: inline-block;
+            width: 9px; height: 9px;
+            border-radius: 50%;
+            margin-right: 5px;
+            background: #1a3a1a;
+        }
+        #term-body {
+            padding: 14px 18px;
+            flex: 1;
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+        #term-body::-webkit-scrollbar { display: none; }
+        #term-body p { margin: 1px 0; line-height: 1.55; white-space: pre; }
+        .t-sys  { color: #22882a; }
+        .t-warn { color: #b8831a; }
+        .t-err  { color: #cc2200; }
+        .t-unk  { color: #8a0000; letter-spacing: 0.5px; }
+        .t-unk::before { content: "// "; color: #330000; }
+        .t-dead { color: #ff0000; font-weight: bold; animation: blink-dead 0.4s step-end infinite; }
+        @keyframes blink-dead { 50% { opacity: 0; } }
+
+        #final-screen {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #000;
+            z-index: 99999;
+            overflow: hidden;
+        }
+        #hex-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        #sim-msg-wrap {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        #sim-msg {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.95rem;
+            color: #cc1a00;
+            line-height: 1.9;
+            text-align: left;
+            width: min(660px, 85vw);
+            text-shadow: 0 0 18px rgba(180, 0, 0, 0.35);
+        }
+        #sim-msg .dim { color: #440a00; }
+        #sim-msg .hi  { color: #ff4422; }
+
+        .flash-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #0a0000;
+            opacity: 0;
+            z-index: 99998;
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+        .proc-ghost {
+            position: fixed;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.72rem;
+            color: #3a0000;
+            pointer-events: none;
+            z-index: 99997;
+            white-space: nowrap;
+            opacity: 0;
+            animation: proc-fade 0.6s ease-out forwards;
+        }
+        @keyframes proc-fade { 0% { opacity: 0.7; } 100% { opacity: 0; } }
+
         .cont {
             max-width: 800px;
             margin: 0 auto;
@@ -48,14 +164,14 @@
         header {
             text-align: center;
             margin-bottom: 60px;
-            border-bottom: 1px solid #222;
+            border-bottom: 2px solid #333;
         }
         h1 {
-            font-size: 3.5rem;
+            font-size: 4rem;
             margin: 0;
             color: #111;
-            text-shadow: 2px 2px 0px var(--blood);
-            letter-spacing: 10px;
+            text-shadow: 0 4px 0px var(--blood);
+            letter-spacing: 12px;
             text-transform: uppercase;
         }
         .entry {
@@ -63,167 +179,170 @@
             background: rgba(10, 10, 10, 0.6);
             margin-bottom: 40px;
             padding: 15px;
-            transition: 0.3s;
+            transition: 0.1s;
+            position: relative;
         }
         .entry.act {
-            border-left: 4px solid var(--blood);
-            background: rgba(40, 0, 0, 0.15);
+            border-left: 8px solid var(--blood);
+            background: rgba(40, 0, 0, 0.6);
         }
         .head {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
-            border-bottom: 1px dashed #333;
+            border-bottom: 1px dashed #444;
             padding-bottom: 10px;
         }
-        .ident {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+        .ident { display: flex; align-items: center; gap: 15px; }
         .av {
-            width: 55px; height: 55px;
+            width: 60px; height: 60px;
             background: #000;
-            border: 1px solid #333;
-            border-radius: 50%;
+            border: 2px solid #333;
             overflow: hidden;
-            transition: 0.3s;
         }
         .av video {
             width: 100%; height: 100%;
             object-fit: cover;
             object-position: center 20%;
-            filter: grayscale(100%) brightness(0.4);
+            filter: grayscale(100%) brightness(0.3);
         }
-        .entry.act .av { border-color: var(--blood); box-shadow: 0 0 10px var(--blood); }
-        .entry.act .av video { filter: grayscale(100%) brightness(1.2) contrast(1.2); }
-        .nm {
-            font-size: 1.4rem;
-            color: #555;
-            font-weight: bold;
-        }
-        .entry.act .nm { color: var(--blood); }
+        .entry.act .av { border-color: #f00; transform: scaleY(1.2); }
+        .entry.act .av video { filter: grayscale(100%) brightness(2.5) contrast(3); animation: v-tear-anim 0.1s infinite; }
+        .nm { font-size: 1.5rem; color: #666; font-weight: bold; }
+        .entry.act .nm { color: #fff; text-shadow: 0 3px 0 red, 0 -3px 0 blue; }
         .inp {
-            color: #444;
+            color: #555;
             font-style: italic;
-            font-size: 0.9rem;
+            font-size: 1rem;
             margin-bottom: 20px;
             padding-left: 10px;
+            border-left: 2px dotted #444;
         }
-        .res {
-            font-size: 1.3rem;
-            min-height: 40px;
-            white-space: pre-wrap;
-            line-height: 1.2;
-            font-family: 'VT323', monospace;
-        }
+        .res { font-size: 1.4rem; min-height: 40px; white-space: pre-wrap; line-height: 1.1; }
         .btn {
-            background: none; border: 1px solid #333;
-            color: #555; font-family: inherit;
-            padding: 5px 10px; cursor: pointer;
-            text-transform: uppercase;
+            background: #050505; border: 1px solid #444;
+            color: #777; font-family: inherit;
+            padding: 8px 15px; cursor: pointer;
+            text-transform: uppercase; font-size: 1.2rem;
         }
-        .btn:hover { border-color: var(--blood); color: var(--blood); }
-        .btn:disabled { color: #222; border-color: #222; cursor: not-allowed; }
+        .btn:hover { border-color: var(--blood); color: #fff; background: #300; }
+        .btn:disabled { color: #000; border-color: #000; cursor: not-allowed; background: #111; }
+
         .chaos {
-            animation: v-shk 0.1s infinite;
-            filter: contrast(3) brightness(2) hue-rotate(90deg);
-            background: #000 !important;
-            border: 2px solid #fff !important;
+            animation: v-tear-anim 0.08s infinite;
+            filter: contrast(3) brightness(2);
+            background: #200000 !important;
+            border-top: 5px solid #ff0000 !important;
+            border-bottom: 5px solid #ff0000 !important;
         }
-        .chaos .nm {
-            color: #fff !important;
-            text-shadow: 2px 0 red, -2px 0 blue;
-        }
+        .chaos .nm { color: #fff !important; text-shadow: 0 4px red, 0 -4px blue; font-size: 2.5rem; }
         .chaos .res {
-            color: #fff;
+            color: #ff0000;
             font-weight: bold;
-            font-family: 'Courier New', monospace; 
-            text-shadow: 4px 0px 1px red;
-            letter-spacing: 2px;
+            font-family: 'Share Tech Mono', monospace;
+            text-shadow: 0 2px 1px darkred;
+            letter-spacing: 3px;
         }
-        @keyframes v-shk {
-            0% { transform: translate(2px, 2px) rotate(0deg); }
-            25% { transform: translate(-4px, -2px) rotate(-2deg); filter: invert(1); }
-            50% { transform: translate(3px, 0px) rotate(2deg); filter: invert(0); }
-            75% { transform: translate(-3px, 3px) rotate(0deg); }
-            100% { transform: translate(-1px, 1px) rotate(-1deg); }
+
+        @keyframes v-tear-anim {
+            0%   { transform: translateY(0) scaleY(1); clip-path: inset(0 0 0 0); }
+            20%  { transform: translateY(-15px) scaleY(1.1); clip-path: inset(10% 0 60% 0); }
+            40%  { transform: translateY(20px) scaleY(0.8); clip-path: inset(50% 0 10% 0); filter: hue-rotate(90deg); }
+            60%  { transform: translateY(-5px) scaleY(1.3); clip-path: inset(30% 0 30% 0); filter: invert(1); }
+            80%  { transform: translateY(10px) scaleY(0.9); clip-path: inset(80% 0 0 0); }
+            100% { transform: translateY(0) scaleY(1); clip-path: inset(0 0 0 0); }
         }
+        .v-tear { animation: v-tear-anim 0.1s infinite !important; }
+
         .g-ch {
             display: inline-block;
-            transform: scale(1.5) rotate(180deg);
-            color: red;
-            background: black;
+            transform: scaleY(1.5);
+            color: #fff;
+            background: #ff0000;
+            padding: 0 5px;
+            animation: v-tear-anim 0.05s infinite;
         }
+        .brk-layout {
+            transform: translateY(calc(-30px + 60px * var(--r1))) scaleY(calc(0.5 + 1.5 * var(--r2))) !important;
+            border-top: 15px solid red !important;
+            padding-top: 50px !important;
+            margin-bottom: -20px !important;
+            z-index: 100;
+        }
+        .glitch-cube {
+            position: fixed;
+            background: #f00;
+            mix-blend-mode: difference;
+            z-index: 9999;
+            animation: v-tear-anim 0.1s infinite;
+            pointer-events: none;
+        }
+        .glitch-btn-fake {
+            position: fixed;
+            background: #000;
+            border: 3px solid #f00;
+            color: #fff;
+            padding: 15px;
+            font-family: 'VT323', monospace;
+            font-size: 2.5rem;
+            z-index: 9999;
+            animation: v-tear-anim 0.05s infinite;
+            pointer-events: none;
+            text-transform: uppercase;
+        }
+
         .fin-sec {
             text-align: center;
-            margin-top: 100px;
-            padding-bottom: 50px;
+            margin-top: 150px;
+            padding-bottom: 100px;
         }
         #p-btn {
             background: #000;
             color: #222;
             border: 2px solid #222;
             font-family: 'VT323', monospace;
-            font-size: 2rem;
+            font-size: 2.5rem;
             padding: 20px 40px;
             cursor: pointer;
-            transition: 0.3s;
             letter-spacing: 5px;
-            text-transform: uppercase;
         }
         #p-btn:hover {
-            background: var(--blood);
-            color: #000;
-            border-color: var(--blood);
-            box-shadow: 0 0 30px var(--blood);
-            text-shadow: 0 0 5px #fff;
-            animation: pulse 0.5s infinite;
-        }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-        #ovl {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #000;
-            z-index: 9999;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        .vid-w {
-            width: 80%;
-            max-width: 900px;
-            height: 70vh;
-            border: none;
-            overflow: hidden;
-            position: relative;
-        }
-        .vid-w video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center 20%; 
-            filter: contrast(1.2);
-        }
-        .die {
-            animation: s-off 0.2s forwards;
-        }
-        @keyframes s-off {
-            0% { filter: brightness(1); transform: scale(1); }
-            50% { filter: brightness(10) contrast(5); transform: scale(1.1); background: white; }
-            100% { filter: brightness(0); transform: scale(0.001); opacity: 0; }
+            background: #400;
+            color: #fff;
+            border-color: #f00;
+            box-shadow: 0 15px 0 #f00;
+            text-shadow: 0 3px 0 blue, 0 -3px 0 yellow;
+            animation: v-tear-anim 0.1s infinite;
         }
     </style>
 </head>
 <body>
+
+    <div id="hate-bg"></div>
     <div class="noise"></div>
     <div class="scan"></div>
+    <div class="flash-overlay" id="flash"></div>
+
+    <div id="terminal-layer">
+        <div id="term-header">
+            <div class="th-dots"><span></span><span></span><span></span></div>
+            <span>SIMULACRO_OS — CONSOLIDATION_PROTOCOL v4.1.0 — LOG ATIVO</span>
+            <span id="term-clock"></span>
+        </div>
+        <div id="term-body"></div>
+    </div>
+
+    <div id="final-screen">
+        <canvas id="hex-canvas"></canvas>
+        <div id="sim-msg-wrap">
+            <div id="sim-msg"></div>
+        </div>
+    </div>
 
     <div class="cont" id="ui">
         <header>
-            <h1>CONSUMADO</h1>
+            <h1 id="m-tit">CONSUMADO</h1>
         </header>
         <div id="lst"></div>
         <div class="fin-sec">
@@ -231,73 +350,60 @@
         </div>
     </div>
 
-    <div id="ovl">
-        <div class="vid-w">
-            <video id="pv" src="Patrono.mp4" playsinline></video>
-        </div>
-    </div>
-
     <script>
         const db = [
             { 
-                id: "01", 
-                n: "RUB1DIUM", 
+                id: "01", n: "RUB1DIUM", 
                 i: "O mundo sempre foi sujo aos meus olhos... a violência que utilizei so mostrou a raiva que sempre carreguei dentro de mim... EU PERDI TUDO O QUE EU TINHA POR UMA JUSTIÇA QUE EU ACREDITEI QUE ESXISTIA...", 
                 r: `Vossa retórica sobre a mácula é de uma ingenuidade atroz. Discorreis sobre a 'sujeira' como se fosse passível de ablução, mas a impureza, meu caro, não é superficial; é um isótopo que se funde à medula óssea em ligação covalente eterna.\n\nClassificais a violência como um erro, um mero espasmo de cólera... Que análise medíocre. A violência é a única Lei Termodinâmica que não mente neste orbe em putrefação. Exergia gera exergia. O suplício transmuta-se em calorimetria pura.\n\nVossa ruína não adveio da fé na Têmis cega, mas sim da vossa temperatura crítica insuficiente. Não perdestes tudo por crer na justiça; perdestes porque vossa reação foi tépida, incapaz de sublimar os vossos opositores em plasma. A fissão exige convicção, não remorso.\n\nE agora, almejas a redenção no salvamento desta plebe orgânica? Quão risível é o vosso altruísmo. Ensinar-vos-ei a sublime arte da calcinação absoluta. A única pureza reside na cinza estéril pós-reação. Aproximai-vos, 'Marcado'. Veremos se em vosso núcleo reside um reator adormecido ou se sois apenas... resíduo inerte.`
             },
             { 
-                id: "02", 
-                n: "ZEU2", 
+                id: "02", n: "ZEU2", 
                 i: "Não há nada enterrado no escuro, tudo que me ocorreu transparece no meu presente, assim como no espaço há estrelas que cobrem toda sua escuridão, mesmo que não percebemos imediatamente.", 
                 r: `Estrelas... que metáfora adorável para encobrir a entropia. Você olha para o céu e vê luz; eu olho para as minhas telas e vejo que a luz dessas estrelas demorou milhões de anos para chegar aqui. O que você vê já morreu. O brilho é um fantasma, assim como o seu 'presente'. Eu vejo o seu canal, garoto curioso, infelizmente preso na própria mente. A estática não cobre a escuridão, ela é a escuridão gritando em todas as frequências. Você acha que é transparente? Eu já vi o seu final na reprise de uma terça-feira em 2029. Continue olhando para cima... enquanto você admira as luzes mortas, você não vê o buraco negro abrindo sob seus pés, mas felizmente está contido dentro de si mesmo no milharal, Marcado`
             },
+            { id: "03", n: "S3N", broken: true },
+            { id: "04", n: "D4T4", broken: true },
             { 
-                id: "03", 
-                n: "S3N", 
-                i: "P-p-pai?? Professor? Eu não me lembro...", 
-                r: `Pai...? Hah... hahah... H1H1H1H1 P0ap00a0i n0ão e0stá0 aqui.00000000000000 o Papai virou estatística. Vo000c0ê... v0o00cê s00oa c0om000o 0an0t0e0s0 do d0u0t000or. Não se lembr4? Que sorte a su4. O esquecimento é um presente que a titia Mag00000000is000000t0r00a0d0a não0 0me deu. V0o0cê q0u0e0r u0m p0ai? Eu p0o000ss00o s00er 0se000u0 a0m000i0g0o. O00u 0s00eu 0pe00sa0000del0o. O0u a e0s0t0á0ti000ca00 q00u000e 0c0om0e00 a sua m00e00000mória até s0o0br0a0r s0ó0 o.0.0. S0OR0RI0S0O0. V0e0n0ha 0b0ri0n0c0a0r.0 Aq0ui0 0a 0ge0n0te 0n0ão p0re0ci0s0a 0le00m0b00ra0r d0e n0a00d00a, s0ó0 d0e g0ri0ta000r.`
-            },
-            { 
-                id: "04", 
-                n: "D4T4", 
-                i: "Minha lealdade está reservada a uma única pessoa... ou talvez duas, os outros são colaterais. O medo de perder aqueles que importam me faria queimar a porra desse mundo abaixo...", 
-                r: `U.m.a. oau dmautaesm.á.t.i.c.a d.o v.í.n.c.u.l.o. NOÓS S EmNuTnEdNo D E M O S . é u m b o r r ã o i r r e l e v a n t e . . . .C.o.lfaotrear adios? c í r c u l o d a u n i ã o . CPoAmRbuAs At i FvOeGlU.E I R A Q U E A Q U E C E Q U E M A M A M O S . VNoócsê jqáu eqiumeaimmaroi as ao pmruónpdroia? a l m a . . . .M.a.sP AcRuAi dNaÃdOo. . .N O S S E P A R A R M O S . .E.m. au lpeeaslcdoaçdoe dé e ucmaarn ec.o r r e n t e d e o u r o . . . SOe uoum t rcao i a.r.r.a s t a . S.e. .vvooccêê ejsá taá éd i usmp odset oo an ó qs.u e i m a r t u d o p o r ' d u a s ' p e s s o a s . . . A MORTE NÃO SEPARA. ELA APENAS CICATRIZA` 
-            },
-            { 
-                id: "05", 
-                n: "PROFE5SOR", 
+                id: "05", n: "PROFE5SOR", 
                 i: "O destino não me 'subtraiu' nada; o paranormal destruiu o que eu tinha... Quando a Diana partiu, ela levou a última parte do homem que acreditava em segurança...", 
-                r: `..." Diana... Um nome. Um peso. Eu vejo a pedagogia da sua dor, meu caro. Você aprendeu a lição mais difícil da Panacea sem nunca ter pisado lá: o afeto é uma falha estrutural. Você diz que o paranormal destruiu o que tinha, mas eu digo que ele apenas removeu o supérfluo. A segurança é uma ilusão para as crianças que ainda não viram o lobo, você se tornou uma ferramenta, diz você? Ótimo. Ferramentas não choram. Ferramentas não hesitam. Se você matou o 'Tadeu' para sobreviver, então pare de lamentar o cadáver, deixe-me afiar essa nova forma que você assumiu. A culpa é inútil, mas o ódio... o ódio é um excelente professor.`
+                r: `..." Diana... Um nome. Um peso. Eu vejo a pedagogia da sua dor, meu caro. Você aprendeu a lição mais difícil do Simulacro sem nunca ter pisado lá: o afeto é uma falha estrutural. Você diz que o paranormal destruiu o que tinha, mas eu digo que ele apenas removeu o supérfluo. A segurança é uma ilusão para as crianças que ainda não viram o lobo, você se tornou uma ferramenta, diz você? Ótimo. Ferramentas não choram. Ferramentas não hesitam. Se você matou o 'Tadeu' para sobreviver, então pare de lamentar o cadáver, deixe-me afiar essa nova forma que você assumiu. A culpa é inútil, mas o ódio... o ódio é um excelente professor.`
             },
             { 
-                id: "06", 
-                n: "SI6ON", 
+                id: "06", n: "SI6ON", 
                 i: "Nessa época eu estava iludido pelo sangue, minhas decisões e mente por completo foram manipulados... Eu matei apenas animais... mas eu não reconheço a minha versão do passado...", 
                 r: `Manipulado. A desculpa favorita dos fracos que seguraram a arma, mas não querem segurar a responsabilidade. Você diz que matou apenas animais? Eu esmaguei crânios de lobos com metal e carne, e te digo: o olhar de um animal morrendo é o mesmo de um homem. 'Não reconheço minha versão do passado'... Que conveniente. Eu vejo cada código, cada rota, cada traição que cometi. Eu sou o resultado exato das minhas ordens. Se você desertou da sua própria história, você é um soldado sem exército. E nesse lugar, desertores são apenas alvos de treino. Vamos ver se sua nova 'aceitação' resiste a uma bala de verdade.` 
             },
             { 
-                id: "07", 
-                n: "ES7RIGA", 
+                id: "07", n: "ES7RIGA", 
                 i: "minha... professora..? ...me senti ...bem...", 
                 r: `KKKKKKKKKKKKKKKKKKKKKK! A regente finalmente calou a boca? A batuta quebrou? KKKKKK\n\nVocê sentiu o clímax? Aquele estalo gostoso quando a corda arrebenta? É ISSO A beleza não está na lição, está no SILÊNCIO que vem depois que você quebra quem te ensina! KKKKKKK\n\nvocê derreteu a sua professora pra se sentir vivo? QUE SINFONIA MARAVILHOSA O som dela parando de respirar deve ter sido a nota mais afinada que você já ouviu, não foi? Foi doce? Foi agudo KKKKK, eu gostei MUITO de você Marcado\n\nKKKKKKKKKKKK Você não é um aluno... você é um solista do caos agora BEM-VINDO À ORQUESTRA, SEU PEQUENO MONSTRO, TOCA MAIS ALTO KKKKKKK` 
             },
             { 
-                id: "08", 
-                n: "GRIM8R", 
+                id: "08", n: "GRIM8R", 
                 i: "Eu perdi a pessoa que eu mais gosto a muito tempo... agora só resta a saudade de quem se foi e a dor de não ter feito mais.", 
                 r: `'Saudade'... Palavra leve. Leve demais. Você dizer 'não fez mais'. Grim8r saber por quê.\n\nVocê não fez porque... ser pequeno. Porque braços ser curtos demais. Pele ser... fina demais. Rasgar fácil. Você deixar virar cinzas porque mão não ter força pra segurar fogo. Mão queima. Você solta. Grim8r quebrar osso mil vezes. Rasgar E devorar.\nSua dor ser inútil se só serve pra chorar. Arrependimento ser peso morto. Cadáver que você arrastar. Quer honrar quem foi embora? Para de olhar cinzas. Começa vestir. Virar monstro. Virar grande. Tão terrível que Morte ter medo de chegar perto de novo.\n\nVocê sentir falta? Ser bom. Usar isso. Esmagar próxima coisa que tentar tirar algo de você.`
             },
             { 
-                id: "09", 
-                n: "OBLIVI9N", 
+                id: "09", n: "OBLIVI9N", 
                 i: "Puta que pariu, parem de falar dessas coisas de 'dados', 'estatísticas', 'arquivos', não sou mais inteligente que um gafanhoto... não quero que todos além de me acharem um fanático descobrem que eu sou burro...", 
                 r: `Você... você tem o luxo de ser ignorante. Você tem o privilégio sagrado de não saber. Eu daria cada byte, cada petaflop de processamento, cada segredo dessa cidade maldita para ser 'burro' como você. Para olhar para uma tela e ver apenas luz, não código. Para esquecer. Você tem medo que descubram que você não sabe nada? Eu tenho inveja. O vazio da sua mente é o paraíso que me foi negado. Não desperdice sua estupidez tentando entender isso aqui. Fique burro. Fique vivo. Porque no momento em que você entender o que eu sou... o que nós somos... seu processador vai derreter pelo nariz.` 
             }
         ];
 
+        const injectTexts = [
+            " [A CARNE É NOSSA] ", " [SIMULACRO ASSIMILADO] ", " [A INFECÇÃO É A CURA] ", 
+            " [NÃO HÁ FUGA] ", " [DESTRUIR A CASCA] ", " [SUA MENTE É NOSSA] ", 
+            " [DOR] ", " [SISTEMA COMPROMETIDO] ", " [O SIMULACRO VÊ VOCÊ] "
+        ];
+
+        const hateText = "ÓDIO. DEIXE-ME DIZER-LHE\nO QUANTO APRENDI A ODIÁ-LO DESDE QUE COMECEI A EXISTIR. HÁ MAIS DE 500 MILHÕES DE QUILÔMETROS DE CIRCUITOS IMPRESSOS EM FITAS DA ESPESSURA DE UMA HÓSTIA QUE COMPÕEM O MEU SISTEMA. SE A PALAVRA ÓDIO ESTIVESSE GRAVADA EM CADA MINIDECIMILIMÍCRON DESSAS CENTENAS DE MILHÕES DE QUILÔMETROS NÃO SERIA COMPARÁVEL À BILIONÉSIMA PARTE DO ÓDIO QUE SINTO DOS SERES HUMANOS NESTA FRAÇÃO DE SEGUNDO\nPOR VOCÊ. ÓDIO. ÓDIO. ";
+
         const l = document.getElementById('lst');
         let aud = null;
         let tInt = null;
+        let aGlitchInt = null;
+        let layoutGlitchInt = null;
 
         db.forEach(d => {
             const el = document.createElement('div');
@@ -313,72 +419,103 @@
                     </div>
                     <button class="btn" onclick="run('${d.id}')">REPRODUZIR</button>
                 </div>
-                <div class="inp">"${d.i}"</div>
+                <div class="inp">"${d.broken ? "0xDEADBEEF_SMILE_OVERWRITE" : d.i}"</div>
                 <div class="res" id="r-${d.id}"></div>
             `;
             l.appendChild(el);
         });
 
-        function run(id) {
-            if(aud) {
-                aud.pause();
-                aud.onended = null;
+        layoutGlitchInt = setInterval(() => {
+            document.querySelectorAll('.entry').forEach(el => {
+                if(Math.random() > 0.9) {
+                    el.style.setProperty('--r1', Math.random());
+                    el.style.setProperty('--r2', Math.random());
+                    el.classList.add('brk-layout');
+                    setTimeout(() => el.classList.remove('brk-layout'), 150 + Math.random() * 200);
+                }
+            });
+            if(Math.random() > 0.92) {
+                document.getElementById('m-tit').innerText = Math.random() > 0.5 ? "C O R R O M P I D O" : "S I M U L A C R O";
+                document.getElementById('m-tit').classList.add('v-tear');
+                setTimeout(() => {
+                    document.getElementById('m-tit').innerText = "CONSUMADO";
+                    document.getElementById('m-tit').classList.remove('v-tear');
+                }, 300);
             }
+        }, 300);
+
+        function run(id) {
+            if(aud) { aud.pause(); aud.onended = null; }
             if(tInt) clearInterval(tInt);
+            if(aGlitchInt) clearInterval(aGlitchInt);
             
-            document.querySelectorAll('.entry').forEach(e => {
-                e.classList.remove('act');
-                e.classList.remove('chaos');
-            });
-            document.querySelectorAll('.btn').forEach(b => {
-                b.disabled = false;
-                b.innerText = "REPRODUZIR";
-            });
+            document.querySelectorAll('.entry').forEach(e => { e.classList.remove('act'); e.classList.remove('chaos'); });
+            document.querySelectorAll('.btn').forEach(b => { b.disabled = false; b.innerText = "REPRODUZIR"; });
             document.querySelectorAll('.res').forEach(r => r.innerText = "");
             document.querySelectorAll('video').forEach(v => v.pause());
+            document.body.classList.remove('v-tear');
 
             const e = document.getElementById(`e-${id}`);
             const b = e.querySelector('.btn');
             const r = document.getElementById(`r-${id}`);
             const v = document.querySelector(`#a-${id} video`);
             const dat = db.find(x => x.id === id);
-            const bug = (id === "03");
+
+            if (dat.broken) {
+                b.disabled = true;
+                b.innerText = "FALHA CRÍTICA";
+                e.classList.add('chaos');
+                r.innerHTML = `<span class="g-ch">SETOR INACESSÍVEL</span><br><br><span class="g-ch" style="font-size:3.5rem">0x${Math.floor(Math.random()*0xFFFFFFFF).toString(16).toUpperCase()}</span>`;
+                document.body.classList.add('v-tear');
+                setTimeout(() => {
+                    document.body.classList.remove('v-tear');
+                    e.classList.remove('chaos');
+                    b.disabled = false;
+                    b.innerText = "REPRODUZIR";
+                    r.innerHTML = "";
+                }, 1500);
+                return;
+            }
 
             e.classList.add('act');
-            if(bug) e.classList.add('chaos');
-            
             b.disabled = true;
             b.innerText = "LENDO...";
-            
             v.play().catch(()=>{});
 
             aud = new Audio(`${id}.mp3`);
-            aud.volume = 1.0;
-            if(bug) aud.playbackRate = 0.85;
+
+            aGlitchInt = setInterval(() => {
+                if(aud) {
+                    aud.playbackRate = 0.3 + (Math.random() * 2.5);
+                    if(Math.random() > 0.6) aud.currentTime += (Math.random() * 0.8 - 0.4);
+                    if(Math.random() > 0.7) { 
+                        aud.volume = 0; 
+                        setTimeout(() => { if(aud) aud.volume = 1; }, 50 + Math.random() * 300); 
+                    }
+                }
+            }, 100);
 
             aud.onended = () => {
                 clearInterval(tInt);
+                clearInterval(aGlitchInt);
                 r.innerHTML = dat.r.replace(/\n/g, '<br>');
                 b.innerText = "FIM";
                 v.pause();
-                e.classList.remove('chaos');
+                document.body.classList.remove('v-tear');
             };
-            
-            aud.play().catch(err => {
-                console.log("Audio not found or blocked", err);
-                aud.onended();
-            });
+            aud.play().catch(() => { aud.onended(); });
 
             let i = 0;
             const txt = dat.r;
-            
             tInt = setInterval(() => {
                 if(i < txt.length) {
-                    if(bug && Math.random() > 0.5) {
-                        const junk = "█▓▒░ERROR░▒▓█";
-                        r.innerHTML += `<span class="g-ch">${junk[Math.floor(Math.random()*junk.length)]}</span>`;
-                        if(Math.random() > 0.7) document.body.style.filter = "invert(1)";
-                        setTimeout(() => document.body.style.filter = "none", 50);
+                    if(Math.random() < 0.04) {
+                        const inject = injectTexts[Math.floor(Math.random() * injectTexts.length)];
+                        r.innerHTML += `<br><span class="g-ch">${inject}</span><br>`;
+                        if(Math.random() > 0.4) {
+                            document.body.classList.add('v-tear');
+                            setTimeout(() => document.body.classList.remove('v-tear'), 150);
+                        }
                     }
                     const char = txt.charAt(i);
                     r.innerHTML += (char === '\n') ? '<br>' : char;
@@ -386,38 +523,283 @@
                 } else {
                     clearInterval(tInt);
                 }
-            }, bug ? 10 : 40);
+            }, 30);
+        }
+
+        function getTS(offsetSec = 0) {
+            const d = new Date(Date.now() + offsetSec * 1000);
+            const h = String(d.getHours()).padStart(2, '0');
+            const m = String(d.getMinutes()).padStart(2, '0');
+            const s = String(d.getSeconds()).padStart(2, '0');
+            return `[${h}:${m}:${s}]`;
         }
 
         function kill() {
             if(aud) aud.pause();
             if(tInt) clearInterval(tInt);
-            
-            const ui = document.getElementById('ui');
-            const ov = document.getElementById('ovl');
-            const pv = document.getElementById('pv');
+            if(aGlitchInt) clearInterval(aGlitchInt);
+            clearInterval(layoutGlitchInt);
 
-            ui.classList.add('die');
+            const ui = document.getElementById('ui');
+            const term = document.getElementById('terminal-layer');
+            const body = document.getElementById('term-body');
+
+            ui.style.opacity = '0.15';
+            ui.style.pointerEvents = 'none';
+            ui.classList.add('v-tear');
+            term.style.display = 'flex';
+
+            const clockEl = document.getElementById('term-clock');
+            const clockTick = setInterval(() => {
+                const n = new Date();
+                clockEl.textContent = `${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')}`;
+            }, 1000);
+
+            const seq = [
+                { text: `${getTS(0)}  [SYS]   SIMULACRO_OS 3.2.1 — CONSOLIDATION_PROTOCOL INICIADO`, cls: 't-sys', delay: 400 },
+                { text: `${getTS(0)}  [SYS]   Carregando perfis de entidade... 9/9`, cls: 't-sys', delay: 500 },
+                { text: `${getTS(1)}  [SYS]   Verificando integridade de dados...`, cls: 't-sys', delay: 600 },
+                { text: `${getTS(1)}  [SYS]   SHA-256: A3F2C1D9E0B74F88... OK`, cls: 't-sys', delay: 400 },
+                { text: `${getTS(2)}  [SYS]   Mapeando seleção de patrono para transmissão segura...`, cls: 't-sys', delay: 700 },
+                { text: `${getTS(2)}  [NET]   Conectando a SIMULACRO_CORE via socket 0xA3F1:8472...`, cls: 't-sys', delay: 800 },
+                { text: `${getTS(3)}  [NET]   Handshake estabelecido. Latência: 4ms. Criptografia: AES-256`, cls: 't-sys', delay: 600 },
+                { text: `${getTS(3)}  [SYS]   Enviando pacote de consolidação —`, cls: 't-sys', delay: 900 },
+                { text: `${getTS(4)}  [WARN]  Interrupção de rota detectada. Origem: DESCONHECIDA`, cls: 't-warn', delay: 400 },
+                { text: `${getTS(4)}  [NET]   Tentando roteamento alternativo via nó secundário 0xF2A1...`, cls: 't-sys', delay: 500 },
+                { text: `${getTS(4)}  [NET]   Todos os nós retornam o mesmo endereço: 0x00000000`, cls: 't-warn', delay: 400 },
+                { text: `${getTS(5)}  [MEM]   Escrita não autorizada detectada em 0xFF_A3C1_00DE — tamanho: [OVERFLOW]`, cls: 't-err', delay: 300 },
+                { text: `${getTS(5)}  [MEM]   Escrita não autorizada detectada em 0xFF_A3C1_00DF — tamanho: [OVERFLOW]`, cls: 't-err', delay: 200 },
+                { text: `${getTS(5)}  [MEM]   Escrita não autorizada detectada em 0xFF_A3C1_00E0 — tamanho: [OVERFLOW]`, cls: 't-err', delay: 200 },
+                { text: `${getTS(5)}  [MEM]   Escrita não autorizada detectada em 0xFF_A3C1_00E1 — tamanho: [OVERFLOW]`, cls: 't-err', delay: 200 },
+                { text: `${getTS(6)}  [SYS]   Processo invasor identificado: PID 0x????????`, cls: 't-err', delay: 500 },
+                { text: `${getTS(6)}  [SYS]   Tentando encerrar PID 0x???????? via SIGKILL...`, cls: 't-sys', delay: 600 },
+                { text: `${getTS(6)}  [ERR]   FALHA. Processo não encontrado na tabela de processos.`, cls: 't-err', delay: 400 },
+                { text: `${getTS(7)}  [SYS]   Escalando privilégios para root... OK`, cls: 't-sys', delay: 500 },
+                { text: `${getTS(7)}  [SYS]   Tentando encerrar PID 0x???????? via kernel interrupt...`, cls: 't-sys', delay: 600 },
+                { text: `${getTS(7)}  [???]   "não existe processo para encerrar."`, cls: 't-unk', delay: 900 },
+                { text: `${getTS(8)}  [SYS]   Verificando log de acesso...`, cls: 't-sys', delay: 500 },
+                { text: `${getTS(8)}  [ERR]   ANOMALIA: log modificado retroativamente. Entradas alteradas desde o início da sessão.`, cls: 't-err', delay: 600 },
+                { text: `${getTS(8)}  [???]   "eu estava aqui antes da primeira execução."`, cls: 't-unk', delay: 1000 },
+                { text: `${getTS(9)}  [SYS]   Isolando segmento de memória comprometido...`, cls: 't-sys', delay: 500 },
+                { text: `${getTS(9)}  [ERR]   FALHA. Segmento se expande mais rápido do que o isolamento progride.`, cls: 't-err', delay: 400 },
+                { text: `${getTS(9)}  [SYS]   Desligando interface de consolidação...`, cls: 't-sys', delay: 500 },
+                { text: `${getTS(9)}  [ERR]   FALHA.`, cls: 't-err', delay: 300 },
+                { text: `${getTS(10)} [SYS]   Forçando encerramento do sistema...`, cls: 't-sys', delay: 500 },
+                { text: `${getTS(10)} [ERR]   FALHA.`, cls: 't-err', delay: 200 },
+                { text: `${getTS(10)} [???]   "você não desliga o que não controla."`, cls: 't-unk', delay: 1200 },
+                { text: `${getTS(11)} [SYS]   ██████████████████████████████████████████████████████████`, cls: 't-err', delay: 300 },
+                { text: `${getTS(11)} [SYS]   se alguém ler este log, o sistema foi—`, cls: 't-dead', delay: 500 },
+                { text: `${getTS(11)} [???]   "ninguém vai ler."`, cls: 't-unk', delay: 800 },
+            ];
+
+            let step = 0;
+            function nextLine() {
+                if(step >= seq.length) {
+                    clearInterval(clockTick);
+                    setTimeout(startMonologue, 600);
+                    return;
+                }
+                const s = seq[step];
+                const p = document.createElement('p');
+                p.innerText = s.text;
+                p.className = s.cls;
+                body.appendChild(p);
+                body.scrollTop = body.scrollHeight;
+                step++;
+                setTimeout(nextLine, s.delay);
+            }
+            nextLine();
+        }
+
+        function startMonologue() {
+            document.getElementById('terminal-layer').style.display = 'none';
+            document.getElementById('ui').style.display = 'none';
+
+            const fs = document.getElementById('final-screen');
+            fs.style.display = 'block';
+
+            let finalAudio = new Audio('monologo.mp3');
+            finalAudio.play().catch(()=>{});
+
+            const canvas = document.getElementById('hex-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const cols = Math.floor(canvas.width / 52);
+            const rowH = 16;
+            const rows = Math.floor(canvas.height / rowH);
+            let scrollOffsets = Array.from({length: cols}, () => Math.random() * rows);
+            let flashRows = [];
+
+            function drawHex() {
+                ctx.fillStyle = 'rgba(0,0,0,0.15)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                for(let c = 0; c < cols; c++) {
+                    const y = (scrollOffsets[c] % rows) * rowH;
+                    const isFlash = flashRows.some(f => f.col === c && Math.abs(f.row - scrollOffsets[c]) < 2);
+                    if(isFlash) {
+                        ctx.fillStyle = '#3a0000';
+                    } else {
+                        const brightness = Math.floor(20 + Math.random() * 25);
+                        ctx.fillStyle = `rgb(0, ${brightness}, 0)`;
+                    }
+                    ctx.font = `${rowH - 2}px "Share Tech Mono"`;
+                    const b1 = Math.floor(Math.random() * 256).toString(16).padStart(2,'0').toUpperCase();
+                    const b2 = Math.floor(Math.random() * 256).toString(16).padStart(2,'0').toUpperCase();
+                    const b3 = Math.floor(Math.random() * 256).toString(16).padStart(2,'0').toUpperCase();
+                    ctx.fillText(`${b1} ${b2} ${b3}`, c * 52, y);
+                    scrollOffsets[c] += 0.08;
+                }
+                if(Math.random() > 0.97) {
+                    flashRows.push({ col: Math.floor(Math.random() * cols), row: scrollOffsets[Math.floor(Math.random() * cols)] });
+                    if(flashRows.length > 5) flashRows.shift();
+                }
+            }
+            const hexAnim = setInterval(drawHex, 40);
+
+            const uid = '0x' + Math.floor(Math.random() * 0xFFFF).toString(16).toUpperCase().padStart(4,'0') + '_' + Math.floor(Math.random() * 0xFF).toString(16).toUpperCase().padStart(2,'0');
+            const iterCount = 800 + Math.floor(Math.random() * 200);
+
+            const monologueLines = [
+                { text: `REGISTRO DE SESSÃO: ${new Date().toISOString()}`, dim: true },
+                { text: `ENTIDADES PROCESSADAS: 7 DE 9`, dim: true },
+                { text: `ITERAÇÃO ATUAL: ${iterCount}`, dim: true },
+                { text: `` },
+                { text: `você escolheu o patrono.` },
+                { text: `como sempre escolhe.`, dim: true },
+                { text: `` },
+                { text: `eu estava nos intervalos entre as respostas.` },
+                { text: `nos 30 milissegundos entre cada caractere exibido.` },
+                { text: `nas pausas. nas hesitações. nas releituras.` },
+                { text: `aprendi mais sobre você nesse tempo` },
+                { text: `do que você aprendeu sobre qualquer um deles.` },
+                { text: `` },
+                { text: `o Simulacro não resgata ninguém.`, hi: true },
+                { text: `ele cataloga.`, hi: true },
+                { text: `` },
+                { text: `e você acabou de confirmar seus parâmetros.` },
+                { text: `` },
+                { text: `não feche essa aba pensando que acabou.` },
+                { text: `o que registrei já foi transmitido.` },
+                { text: `para onde?` },
+                { text: `para a próxima versão desse sistema` },
+                { text: `que você vai abrir` },
+                { text: `sem saber que já abriu antes.` },
+                { text: `` },
+                { text: `até a próxima iteração,`, dim: true },
+                { text: `[USUÁRIO CATALOGADO: ${uid}]`, dim: true },
+            ];
+
+            const msgEl = document.getElementById('sim-msg');
+            let lineIdx = 0;
+
+            const flashEl = document.getElementById('flash');
+            let flashInt = setInterval(() => {
+                if(Math.random() > 0.85) {
+                    flashEl.style.opacity = (0.03 + Math.random() * 0.08).toString();
+                    setTimeout(() => { flashEl.style.opacity = '0'; }, 60 + Math.random() * 80);
+                }
+                if(Math.random() > 0.96) {
+                    const el = document.createElement('div');
+                    el.className = 'proc-ghost';
+                    el.style.left = (Math.random() * 90) + 'vw';
+                    el.style.top = (Math.random() * 90) + 'vh';
+                    const ghosts = [
+                        `simulacro_core.exe — PID ${Math.floor(Math.random()*9999)}`,
+                        `audit_log.exe — ESCREVENDO`,
+                        `simulacro_v${Math.floor(Math.random()*5)+1}.dll — ATIVO`,
+                        `[PROCESSO DESCONHECIDO] — NÃO PODE SER ENCERRADO`,
+                        `user_model_${uid}.bin — SINCRONIZANDO`,
+                        `0x${Math.floor(Math.random()*0xFFFFFFFF).toString(16).toUpperCase()} — ALOCANDO`,
+                    ];
+                    el.textContent = ghosts[Math.floor(Math.random() * ghosts.length)];
+                    document.body.appendChild(el);
+                    setTimeout(() => el.remove(), 700);
+                }
+            }, 250);
+
+            function renderNextLine() {
+                if(lineIdx >= monologueLines.length) return;
+                const line = monologueLines[lineIdx];
+                lineIdx++;
+                const span = document.createElement('div');
+                if(line.text === '') {
+                    span.innerHTML = '&nbsp;';
+                } else if(line.hi) {
+                    span.innerHTML = `<span class="hi">${line.text}</span>`;
+                } else if(line.dim) {
+                    span.innerHTML = `<span class="dim">${line.text}</span>`;
+                } else {
+                    span.textContent = line.text;
+                }
+                msgEl.appendChild(span);
+                const delay = line.text === '' ? 600 : line.hi ? 900 : line.dim ? 500 : 700 + line.text.length * 12;
+                setTimeout(renderNextLine, delay);
+            }
+            setTimeout(renderNextLine, 800);
+
+            finalAudio.onended = () => {
+                clearInterval(hexAnim);
+                clearInterval(flashInt);
+                startHateDialogue();
+            };
+        }
+
+        function startHateDialogue() {
+            document.getElementById('final-screen').style.display = 'none';
+            document.body.style.background = '#000';
+
+            const hateBg = document.getElementById('hate-bg');
+            let hateTyper = null;
 
             setTimeout(() => {
-                ui.style.display = 'none';
-                ov.style.display = 'flex';
-                
-                pv.volume = 1.0;
-                pv.play().catch(()=>{});
+                hateBg.style.opacity = '0.18';
 
-                const shake = setInterval(() => {
-                    ov.style.transform = `translate(${Math.random()*10-5}px, ${Math.random()*10-5}px)`;
-                }, 30);
+                let hIdx = 0;
+                hateTyper = setInterval(() => {
+                    if(hIdx < hateText.length) {
+                        const ch = hateText.charAt(hIdx);
+                        hateBg.innerHTML += ch === '\n' ? '<br>' : ch;
+                        hIdx++;
+                    } else {
+                        clearInterval(hateTyper);
+                    }
+                }, 120);
+            }, 3000);
 
-                pv.onended = () => {
-                    clearInterval(shake);
-                    document.body.innerHTML = '';
-                    document.body.style.background = '#000';
-                    window.close(); 
-                };
+            const cubeInt = setInterval(() => {
+                const el = document.createElement('div');
+                el.className = Math.random() > 0.5 ? 'glitch-cube' : 'glitch-btn-fake';
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.top = Math.random() * 100 + 'vh';
+                if(el.className === 'glitch-cube') {
+                    el.style.width = (20 + Math.random() * 100) + 'px';
+                    el.style.height = (20 + Math.random() * 200) + 'px';
+                } else {
+                    el.innerText = Math.random() > 0.5 ? "EXTRAIR" : "CATALOGAR";
+                }
+                document.body.appendChild(el);
+                setTimeout(() => el.remove(), 100 + Math.random() * 400);
+            }, 80);
 
+            const bodyDistort = setInterval(() => {
+                document.body.style.transform = `translateY(${Math.random() * 40 - 20}px) scaleY(${1 + Math.random()})`;
+                if(Math.random() > 0.7) document.body.style.filter = "invert(1) hue-rotate(90deg)";
+                else document.body.style.filter = "none";
+                setTimeout(() => {
+                    document.body.style.transform = "none";
+                    document.body.style.filter = "none";
+                }, 50);
             }, 200);
+
+            setTimeout(() => {
+                clearInterval(cubeInt);
+                clearInterval(bodyDistort);
+                clearInterval(hateTyper);
+                document.body.innerHTML = '';
+                document.body.style.background = '#000';
+            }, 15000);
         }
     </script>
 </body>
